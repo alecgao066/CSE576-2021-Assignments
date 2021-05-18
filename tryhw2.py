@@ -42,3 +42,11 @@ res = sobel_image(im)
 mag = res[0]
 feature_normalize(mag)
 save_image(mag, "magnitude")
+
+im = load_image("data/landscape.jpg")
+res = apply_median_filter(im, 3)
+save_image(res, "median")
+
+im = load_image("data/landscape.jpg")
+res = apply_bilateral_filter(im, 1.2, 0.4)
+save_image(res, "bilateral")

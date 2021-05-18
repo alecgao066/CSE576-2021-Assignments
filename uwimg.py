@@ -178,6 +178,7 @@ convolve_image = lib.convolve_image
 convolve_image.argtypes = [IMAGE, IMAGE, c_int]
 convolve_image.restype = IMAGE
 
+
 ##### HOMEWORK 3
 
 harris_corner_detector = lib.harris_corner_detector
@@ -238,6 +239,15 @@ def make_model(layers):
     m.n = len(layers)
     m.layers = (LAYER*m.n) (*layers)
     return m
+
+apply_median_filter = lib.apply_median_filter
+apply_median_filter.argtypes = [IMAGE, c_int]
+apply_median_filter.restype = IMAGE
+
+apply_bilateral_filter = lib.apply_bilateral_filter
+apply_bilateral_filter.argtypes = [IMAGE, c_float, c_float]
+apply_bilateral_filter.restype = IMAGE
+
 
 if __name__ == "__main__":
     im = load_image("data/dog.jpg")

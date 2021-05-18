@@ -15,18 +15,28 @@ void activate_matrix(matrix m, ACTIVATION a)
         for(j = 0; j < m.cols; ++j){
             double x = m.data[i][j];
             if(a == LOGISTIC){
-                // TODO
+                // 1/ 1 - e^x
+                m.data[i][j] = 1 / (1 + exp(-x));
             } else if (a == RELU){
                 // TODO
+                if (x <= 0) m.data[i][j] = 0;
+                else m.data[i][j] = x;
             } else if (a == LRELU){
                 // TODO
+                if (x <= 0) m.data[i][j] = 0.1 * x;
+                else m.data[i][j] = x;
             } else if (a == SOFTMAX){
                 // TODO
+                m.data[i][j] = exp(x);
+                sum += m.data[i][j];
             }
-            sum += m.data[i][j];
+            //sum += m.data[i][j];
         }
         if (a == SOFTMAX) {
             // TODO: have to normalize by sum if we are using SOFTMAX
+            for (int k = 0; k < m.cols; k++){
+                m.data[i][k] = m.data[i][k] / sum;
+            }
         }
     }
 }
@@ -43,6 +53,22 @@ void gradient_matrix(matrix m, ACTIVATION a, matrix d)
         for(j = 0; j < m.cols; ++j){
             double x = m.data[i][j];
             // TODO: multiply the correct element of d by the gradient
+            if(a == LOGISTIC){
+                // f'(x) = f(x) * (1 - f(x))
+                x = x * (1 - x);
+                d.data[i][j] = d.data[i][j] * x;
+            } else if (a == RELU){
+                // 0 or 1. d(x=0) = 0. 
+                if (x <= 0) d.data[i][j] = 0;
+                else d.data[i][j] = d.data[i][j] * 1;
+            } else if (a == LRELU){
+                // 0.1 or 1. d(x=0) = 0. 1
+                if (x <= 0) d.data[i][j] = d.data[i][j] * 0.1;
+                else d.data[i][j] = d.data[i][j] * 1;
+            } else if (a == SOFTMAX){
+                // 1
+                d.data[i][j] = d.data[i][j] * 1;
+            }
         }
     }
 }
@@ -56,10 +82,14 @@ matrix forward_layer(layer *l, matrix in)
 
     l->in = in;  // Save the input for backpropagation
 
-
     // TODO: fix this! multiply input by weights and apply activation function.
-    matrix out = make_matrix(in.rows, l->w.cols);
-
+    //matrix out = make_matrix(in.rows, l->w.cols);
+    if (in.cols != l->w.rows){
+        in = transpose_matrix(in);
+        l->w = transpose_matrix(l->w);
+    }
+    matrix out = matrix_mult_matrix(in, l->w);
+    activate_matrix(out, l->activation);
 
     free_matrix(l->out);// free the old output
     l->out = out;       // Save the current output for gradient calculation
@@ -75,19 +105,20 @@ matrix backward_layer(layer *l, matrix delta)
     // 1.4.1
     // delta is dL/dy
     // TODO: modify it in place to be dL/d(xw)
-
+    gradient_matrix(l->out, l->activation, delta);
 
     // 1.4.2
     // TODO: then calculate dL/dw and save it in l->dw
+    matrix in_t = transpose_matrix(l->in);
     free_matrix(l->dw);
-    matrix dw = make_matrix(l->w.rows, l->w.cols); // replace this
+    matrix dw = matrix_mult_matrix(in_t, delta); // replace this
     l->dw = dw;
 
     
     // 1.4.3
     // TODO: finally, calculate dL/dx and return it.
-    matrix dx = make_matrix(l->in.rows, l->in.cols); // replace this
-
+    matrix w_t = transpose_matrix(l->w);
+    matrix dx = matrix_mult_matrix(delta, w_t); 
     return dx;
 }
 
@@ -101,13 +132,16 @@ void update_layer(layer *l, double rate, double momentum, double decay)
     // TODO:
     // Calculate Δw_t = dL/dw_t - λw_t + mΔw_{t-1}
     // save it to l->v
-
-
+    matrix dw_t1 = axpy_matrix(-1 * decay, l->w, l->dw);
+    matrix dw_t2 = axpy_matrix(momentum, l->v, dw_t1);
+    free_matrix(l->v);
+    l->v = dw_t2;
     // Update l->w
-
-
+    matrix w_t = axpy_matrix(rate, dw_t2, l->w);
+    free_matrix(l->w);
+    l->w = w_t;
     // Remember to free any intermediate results to avoid memory leaks
-
+    free_matrix(dw_t1);
 }
 
 // Make a new layer for our model
@@ -245,26 +279,32 @@ void train_model(model m, data d, int batch, int iters, double rate, double mome
 // Questions 
 //
 // 2.1.1 What are the training and test accuracy values you get? Why might we be interested in both training accuracy and testing accuracy? What do these two numbers tell us about our current model?
-// TODO
+// Training accuracy is 90.34 %. Testing accuracy is 90.76 %. The training accuracy can tell how well the model fits the training data. The testing accuracy can tell the generalization capbility of the model.
+// Our current model has a similarly high training and testing accuracy, which indicates both its bias and variance are small. It doesn't have obvious overfitting or underfitting problem.
 //
 // 2.1.2 Try varying the model parameter for learning rate to different powers of 10 (i.e. 10^1, 10^0, 10^-1, 10^-2, 10^-3) and training the model. What patterns do you see and how does the choice of learning rate affect both the loss during training and the final model accuracy?
-// TODO
+// The trianing and testing accuracy is highest when the leaning rate equals 0.1. The accuracy goes down if the leaning rate is too small or too large. If the learning rate is samll, the model can't reach the minimum error by the end of iterations. If the learning rate is large, the model jumps around too much in each iteration, unable to converge to the minimum error.
 //
 // 2.1.3 Try varying the parameter for weight decay to different powers of 10: (10^0, 10^-1, 10^-2, 10^-3, 10^-4, 10^-5). How does weight decay affect the final model training and test accuracy?
-// TODO
+// The trianing and testing accuracy is highest when the weight decay equals 0.1. The accuracy goes down if the weight decay is too small or too large.
 //
 // 2.2.1 Currently the model uses a logistic activation for the first layer. Try using a the different activation functions we programmed. How well do they perform? What's best?
-// TODO
+// LRELU has the best performance, which achieves an accuracy of 94.88%. RELU has a slightly lower accuracy of 94.62. Logistic achieves over 93% accuracy and Linear only reaches an accuracy of about 90%.
 //
 // 2.2.2 Using the same activation, find the best (power of 10) learning rate for your model. What is the training accuracy and testing accuracy?
-// TODO
+// The best learning rate is 0.1. The training accuracy is 95.97 %. The testing accuracy is 95.41 %.
 //
 // 2.2.3 Right now the regularization parameter `decay` is set to 0. Try adding some decay to your model. What happens, does it help? Why or why not may this be?
-// TODO
+// Yes, when the decay is 0.01, training accuracy becomes 96.01%, and testing accuracy becomes 95.43%.
+// Adding weight decay improves the accuracy, because the weight decay can make the model better generalization ability and prevents overfitting.
 //
 // 2.2.4 Modify your model so it has 3 layers instead of two. The layers should be `inputs -> 64`, `64 -> 32`, and `32 -> outputs`. Also modify your model to train for 3000 iterations instead of 1000. Look at the training and testing error for different values of decay (powers of 10, 10^-4 -> 10^0). Which is best? Why?
-// TODO
+// 0.1 is the best. The training accuracy is lower than smaller decay values but the testing accuracy is highest. 
+// The model has more layers and more parameters, for a complex model, it is easy to over fit the data. Adopting a large weight decay can prevent overfitting and promotes generalizaton.
 //
 // 3.1.1 What is the best training accuracy and testing accuracy? Summarize all the hyperparameter combinations you tried.
-// TODO
-//
+// The training accuracy is 49.41%, and the testing accuracy is 47.37%.
+// I tried learning rate 0.1, 0.01 and 0.001. The accuracy is highest when learnning rate is 0.01.
+// The best accuracy is achieved when weight decay is 0.1, among 0.01, 0.1 and 1.
+// I tried iteration number 3000 and 5000. 5000 iterations give a higher accuracy.
+// I tried LOGiSTIC, RELU, and LRELU, and found LRELU has the highest accuracy.
