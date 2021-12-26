@@ -1,4 +1,4 @@
-# Welcome to CSE 576, 2021 Spring
+# CSE 576, 2021 Spring
 
 In this repository you will find instructions on how to build your own image processing/computer vision library from (mostly) scratch. The work is divided out into different homework assignments, found in the `src/` directory.
 
@@ -11,10 +11,6 @@ make
 ```
 
 and check to see that everything compiles correctly. We recommend using Linux or MacOS for the homework since installing `make` is easier. Linux uses GNU C++ compiler, while MacOS uses XCode C++ compiler. 
-
-## Get started on HW1
-
-Open up the README for homework 1 in src/hw1/README.md, or view it [here](src/hw1/README.md). Good luck and have fun!
 
 ## Instructions for Mac Users
 In MacOS, make sure you have the latest version of Xcode and perform `xcode-select --install`. 
