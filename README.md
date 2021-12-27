@@ -83,8 +83,9 @@ a. Handwritten digit identification (MNIST)
 
 | Structure | Learning rate | Weight decay | Activation | Iteration |
 | ----------- | ----------- | ----------- |----------- |----------- |
-| 3-layer Neuron Net | 0.1 | 0.1 |LRELU |3000 |
-96.01% accuracy on the training set.
+| 3-layer Neuron Net | 0.1 | 0.1 |LRELU |3000 |  
+
+96.01% accuracy on the training set.  
 95.54% accuracy on the training set.  
 
 b. Image classification (CIFAR10)
