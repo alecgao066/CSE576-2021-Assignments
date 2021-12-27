@@ -1,5 +1,7 @@
 # CSE 576, 2021 Spring
 
+This is my solutions to CSE 576 2021 assignments. It is also an image processing/computer vision library in C with Python api. Key features include color space operations, image filtering, panorama stitching, optical flow and neuron networks.
+## Course Introduction
 In this repository you will find instructions on how to build your own image processing/computer vision library from (mostly) scratch. The work is divided out into different homework assignments, found in the `src/` directory.
 
 To get started, make sure you have `git`, a C compiler, and `make` installed. Then run:
@@ -27,4 +29,4 @@ Installation Steps:
     - run the command `conda install -c conda-forge make cmake` to install Make.
 6. Now, you can follow the same instructions as Mac/Linux users do. 
 
-
+## Results
