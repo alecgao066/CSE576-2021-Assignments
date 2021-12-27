@@ -37,33 +37,33 @@ a. RGB to gray scale
 <img src=".\figs\results\rgb_2_gray.jpg" width = "500">
 b. Saturation adjustment in HSV color space
 <img src=".\figs\results\dog_saturated.jpg" width = "500">
-2. Resize
+2. Resize  <br>
 Raw image
 <img src=".\figs\results\dogsmall.jpg">
 a. Resize - nearest neighbor
 <img src=".\figs\results\dog4x-nn.jpg">
 b. Resize - bilinear
 <img src=".\figs\results\dog4x-bl.jpg">
-3. Low-pass filtering
+3. Low-pass filtering  <br>
 Raw image
 <img src=".\figs\results\dog.jpg">
 a. Box filter
 <img src=".\figs\results\dog-box7.jpg">
 b. Gaussian filter
 <img src=".\figs\results\dog-gauss2.jpg">
-4. Edge detection
+4. Edge detection  <br>
 Raw image
 <img src=".\figs\results\dog.jpg">
 Edge
 <img src=".\figs\results\magnitude.jpg">
-5. Denoising
+5. Denoising  <br>
 Raw image
 <img src=".\figs\results\landscape.jpg">
 a. Median filter
 <img src=".\figs\results\median.jpg">
 b. Bilateral filter
 <img src=".\figs\results\bilateral.jpg">
-6. Panorama stitching
+6. Panorama stitching  <br>
 a. Harris corner point detection
 <img src=".\figs\results\corners.jpg">
 b. Matching
@@ -77,7 +77,7 @@ e. panorama stitching of multiple images with cylindrical projections
 7. Optical flow
 <img src=".\figs\results\lines.jpg">
 
-8. Neuron networks
+8. Neuron networks (C implementation)
 
 a. Handwritten digit identification (MNIST)
 
