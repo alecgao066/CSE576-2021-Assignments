@@ -77,9 +77,10 @@ e. panorama stitching of multiple images with cylindrical projections
 7. Optical flow
 <img src=".\figs\results\lines.jpg">
 
-8. Neuron networks (C implementation)
+8. Neuron networks 
 
-a. Handwritten digit identification (MNIST)
+a. Handwritten digit identification (C implementations)  
+Dataset: MNIST
 
 | Structure | Learning rate | Weight decay | Activation | Iteration |
 | ----------- | ----------- | ----------- |----------- |----------- |
@@ -88,7 +89,9 @@ a. Handwritten digit identification (MNIST)
 96.01% accuracy on the training set.  
 95.54% accuracy on the training set.  
 
-b. Image classification (CIFAR10)
+b. Image classification (Pytorch)  
+
+Dataset: CFAR10 subset
 | Model | Number of parameters | Training accuracy | Validation accuracy |
 | ----------- | ----------- | ----------- |----------- |
 | Neuron Net | 346373 | 76.26% | 77.16% |
